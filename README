@@ -1,0 +1,64 @@
+在vue项目中，在entry 里面配置文件入口，可以独立出文件，从而减少 app.js 的体积
+ 如：
+ entry: {
+     app: './src/main.js',
+     first: './src/assets/js/first.js',
+     second: './src/assets/js/second.js',
+   },
+
+如以下结构
+common.js
+export const common = 'common file';
+
+first.js
+import {common} from './common';
+import $ from 'jquery';
+console.log($，`first  ${common}`);
+
+second.js
+import {common} from './common';
+import $ from 'jquery';
+console.log($，`second ${common}`);
+
+first.js 和second.js都 加载了common.js文件的话打包后就会有重复的代码在2个JS文件中
+
+分离出第三方库、自定义公共模块、webpack运行文件
+这时候修改webpack.config.js新增一个入口文件vendor2和CommonsChunkPlugin插件进行公共模块的提取：
+
+const config = {
+    entry: {
+        app: './src/main.js',
+        first: './src/first.js',
+        second: './src/second.js'
+    },
+    plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor2',
+            filename: '[name].js'
+        }),
+        minChunks 默认值
+        当忽略此属性时，只有在被所有入口文件都依赖时，才会提取相应模块
+    ]
+}
+
+
+new webpack.optimize.CommonsChunkPlugin({
+      name: 'app',
+      async: 'vendor-async',
+      children: true,
+      minChunks: 3
+}),
+
+那么minChunks的值为number时，由什么效果呢？
+经过我测试，发现minChunks是指某个模块最少被多少个入口文件依赖。
+当大于等于minChunks设定的值时，该模块就会被打包到公用包中。
+小于这个值时，该模块就会被和每个入口文件打包在一起。
+比如，有八个入口文件，minChunks值为7，那么，就算某个模块被6个入口文件依赖了，这个模块也会被打包6次，每个依赖他的文件中都有一份相同的代码。
+
+
+new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      minChunks: Infinity
+    }),
+
+搞懂了minChunks的number属性，Infinity属性就很好理解了。也就是不会把任何依赖的模块提取出来打包公用。
