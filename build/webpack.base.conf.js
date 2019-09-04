@@ -26,6 +26,7 @@ module.exports = {
     app: './src/main.js',
     first: './src/assets/js/first.js',
     second: './src/assets/js/second.js',
+    three: './src/assets/js/three.js',
   },
   output: {
     path: config.build.assetsRoot,
@@ -42,12 +43,12 @@ module.exports = {
     }
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery",
-      "window.jQuery": "jquery",
-      "window.$": "jquery",
-    })
+    // new webpack.ProvidePlugin({
+    //   $: "jquery",
+    //   jQuery: "jquery",
+    //   "window.jQuery": "jquery",
+    //   "window.$": "jquery",
+    // })
   ],
   module: {
     rules: [

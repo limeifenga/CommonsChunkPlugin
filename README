@@ -33,11 +33,12 @@ const config = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor2',
+            name: 'vendor',
             filename: '[name].js'
         }),
         minChunks 默认值
         当忽略此属性时，只有在被所有入口文件都依赖时，才会提取相应模块
+        否则其他其他依赖模块会打包到app中去了，
     ]
 }
 
@@ -46,7 +47,7 @@ new webpack.optimize.CommonsChunkPlugin({
       name: 'app',
       async: 'vendor-async',
       children: true,
-      minChunks: 3
+      minChunks:3
 }),
 
 那么minChunks的值为number时，由什么效果呢？
@@ -59,6 +60,8 @@ new webpack.optimize.CommonsChunkPlugin({
 new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       minChunks: Infinity
-    }),
+}),
 
-搞懂了minChunks的number属性，Infinity属性就很好理解了。也就是不会把任何依赖的模块提取出来打包公用。
+// 至于manifest的话，主要是一些异步加载的实现方法（通过建立script方式动态引入js），内容上包含异步js的文件名和路径
+//manifest.js: 最后一个chunk，被注入了webpackJsonp的定义及异步加载相关的定义
+// (webpack调用CommonsChunkPlugin处理后模块管理的核心,因为是核心,所以要第一个进行加载,

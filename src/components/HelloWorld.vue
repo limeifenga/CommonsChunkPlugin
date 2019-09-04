@@ -5,7 +5,9 @@
 </template>
 
 <script>
-
+import '@assets/js/first.js'
+import '@assets/js/second.js'
+import '@assets/js/three.js'
 export default {
   name: 'HelloWorld',
   data () {
